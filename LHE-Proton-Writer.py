@@ -28,7 +28,7 @@ with open(path, 'r+') as f:
 pzini = 7000		# protons inicial pz 
 eini = 7000		# protons inicial energy
 
-# Proton rest mass: 0.9382720882E+00
+# Proton rest mass: 0.9382720882E+00    # from: https://pdg.lbl.gov/2019/reviews/rpp2019-rev-phys-constants.pdf
 m0 = 0.9382720882
 
 lvector = TLorentzVector()
