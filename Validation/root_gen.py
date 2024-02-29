@@ -3,6 +3,7 @@ from subprocess import call
 from math import *
 from ROOT import *
 from array import array
+import numpy as np
 
 #####################################################################
 # GGS (CERN-CMS/UFRGS) ---
@@ -13,19 +14,20 @@ from array import array
 #####################################################################
 # USER INPUT:
 
+rootinput = np.loadtxt('root_input.txt', unpack=True, dtype=str, delimiter='=')
+
 # CROSS SECTION(S) (pb):
-xsec    = [ 0.186818512E-03, 9.985100e-01, 0.13183148E+02, 1.5393433571E+00]; #FIXME
-#xsec = [ 1. , 1. , 1. , 1. , .1 ];
+xsec    = eval(rootinput[1][0]) #FIXME
 
 # PDF "_"+LABEL FOR OUTPUT FILES:
-JOB     = "histos";
-PDF     = [ 'superchic', 'MadGraph', 'FPMC', 'LPAIR']; #FIXME
-scale   = False; #bug, use False, carefull with Nevts
-cuts    = True;
-setLog  = False;
-filled  = False;
-stacked = False;
-data    = False;
+JOB     = eval(rootinput[1][1])
+PDF     = eval(rootinput[1][2]) #FIXME
+scale   = eval(rootinput[1][3]) #bug, use False, carefull with Nevts
+cuts    = eval(rootinput[1][4])
+setLog  = eval(rootinput[1][5])
+filled  = eval(rootinput[1][6])
+stacked = eval(rootinput[1][7])
+data    = eval(rootinput[1][8])
 
 # KINEMATICAL CUTS: #FIXME
 INVMCUTUPPER = 14000.0; # (NO CUT 9999.0 )
@@ -49,10 +51,10 @@ FILES   = [
 #FIXME
 
 # EVENT SAMPLE INPUT:
-Nevt    = 200000; #FIXME
-Nmax    = 10000   # number of max events to obtain from samples
+Nevt    = eval(rootinput[1][9]) #FIXME
+Nmax    = eval(rootinput[1][10]) # number of max events to obtain from samples
 EVTINPUT= str(int(Nevt/1000))+"k";
-SQRTS   = 14000         # in GeV
+SQRTS   = eval(rootinput[1][11]) # in GeV
 
 #####################################################################
 
