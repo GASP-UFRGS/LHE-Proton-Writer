@@ -2,23 +2,29 @@ from __future__ import division
 from subprocess import call
 from math import *
 from ROOT import *
+import numpy as np
 
+
+rootinput = np.loadtxt('root_input.txt', unpack=True, dtype=str, delimiter='=')
+
+# CROSS SECTION(S) (pb):
+xsec    = eval(rootinput[1][0])
 
 # Plotting options:
-JOB     = "histos";
-PDF     = [ 'superchic', 'MadGraph', 'FPMC', 'LPAIR']; #FIXME
-scale   = False; #bug, use False, carefull with Nevts
-cuts    = True;
-setLog  = False;
-filled  = False;
-stacked = False;
-data    = False;
+JOB     = eval(rootinput[1][1])
+PDF     = eval(rootinput[1][2])
+scale   = eval(rootinput[1][3]) 
+cuts    = eval(rootinput[1][4])
+setLog  = eval(rootinput[1][5])
+filled  = eval(rootinput[1][6])
+stacked = eval(rootinput[1][7])
+data    = eval(rootinput[1][8])
 
 # EVENT SAMPLE INPUT:
-Nevt    = 200000; #FIXME
-Nmax    = 10000   # number of max events to obtain from samples
+Nevt    = eval(rootinput[1][9])
+Nmax    = eval(rootinput[1][10])
 EVTINPUT= str(int(Nmax/1000))+"k";
-SQRTS   = 14000         # in GeV
+SQRTS   = eval(rootinput[1][11])
 
 # LABELS:
 LABEL = "FULL_inner.final.madgraph";
