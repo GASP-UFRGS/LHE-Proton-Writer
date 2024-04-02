@@ -46,8 +46,7 @@ PTCUTLOWER = 10.0; # (NO CUT 0.0)
 # INPUT FILES:
 
 #processo 3
-FILES   = [
-"samples/newevrectest.dat", 'samples/newunweighted_events.3.5.lhe', 'samples/fpmc_14tev.lhe', 'samples/Artur_gammagammamumu-lpair_elel_pt10_14tev_20k.lhe']
+FILES   = eval(rootinput[1][12])
 #FIXME
 
 # EVENT SAMPLE INPUT:
