@@ -1,0 +1,20 @@
+# CROSS SECTION(S) (pb):
+xsec    = [0.186818512E-03,9.985100e-01,0.13183148E+02,1.5393433571E+00]
+
+# Plotting options:
+JOB     = "histos"
+PDF     = ['superchic','MadGraph','FPMC','LPAIR']
+scale   = False
+cuts    = True
+setLog  = False
+filled  = False
+stacked = False
+data    = False
+
+# EVENT SAMPLE INPUT
+Nevt    = 200000
+Nmax    = 10000
+SQRTS   = 14000
+
+FILES   = ["newevrectest.dat", 'newunweighted_events.3.5.lhe', 'fpmc_14tev.lhe', 'Artur_gammagammamumu-lpair_elel_pt10_14tev_20k.lhe']
+
