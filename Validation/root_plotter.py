@@ -18,12 +18,15 @@ setLog  = eval(rootinput[1][5])
 filled  = eval(rootinput[1][6])
 stacked = eval(rootinput[1][7])
 data    = eval(rootinput[1][8])
+LUMI    = eval(rootinput[1][9])
 
 # EVENT SAMPLE INPUT:
-Nevt    = eval(rootinput[1][9])
-Nmax    = eval(rootinput[1][10])
+Nevt    = eval(rootinput[1][10])
+Nmax    = eval(rootinput[1][11])
 EVTINPUT= str(int(Nmax/1000))+"k";
-SQRTS   = eval(rootinput[1][11])
+SQRTS   = eval(rootinput[1][12])
+lumi    = float(rootinput[1][14])
+
 
 # LABELS:
 LABEL = "FULL_inner.final.madgraph";
@@ -62,6 +65,10 @@ mueta        = []
 phopz        = []
 phopt        = []
 phoen        = []
+phoivm       = []
+phopsrap2    = [] 
+phopsrap1    = []
+phoY         = []
 
 # 2D:
 DDmppmmumu   = []
@@ -74,10 +81,10 @@ for k in keys:
 
 # THE ARRAYS STORE THE LABELS FOR AXIS AND UNITS:
 # 1D
-histoslog        = [protpz,proten,protxi,protpt,proteta,mpp,mupz,muen,mupt,ivmmu,mueta,phopz,phopt,phoen];
-histoslog_label  = ["protpz","proten",'protxi','protpt','proteta','mpp',"mupz","muen","mupt",'ivm_mu','mueta','phopz','phopt','phoen'];
-histoslog_axis   = ["p_{z}(p)","E(p)",'#chi(p)','p_{T}(p)','#eta(p^{+}p^{-})','M(p^{+}p^{-})',"p_{z}(#mu)","E(#mu)","p_{T}(#mu)",'M(#mu^{+}#mu^{-})','#eta(#mu^{+}#mu^{-})','p_{z}(#alpha)','p_{T}(#alpha)','E(#alpha)'];
-histoslog_varx   = ["(GeV)","(GeV)",'','(GeV)','','(GeV)',"(GeV)","(GeV)","(GeV)",'(GeV)','','(GeV)','(GeV)','(GeV)']
+histoslog        = [protpz,proten,protxi,protpt,proteta,mpp,mupz,muen,mupt,ivmmu,mueta,phopz,phopt,phoen,phoivm,phopsrap2,phopsrap1,phoY]
+histoslog_label  = ["protpz","proten",'protxi','protpt','proteta','mpp',"mupz","muen","mupt",'ivm_mu','mueta','phopz','phopt','phoen','phoivm','phopsrap2','phopsrap1','phoY']
+histoslog_axis   = ["p_{z}(p)","E(p)",'#chi(p)','p_{T}(p)','#eta(p^{+}p^{-})','M(p^{+}p^{-})',"p_{z}(#mu)","E(#mu)","p_{T}(#mu)",'M(#mu^{+}#mu^{-})','#eta(#mu^{+}#mu^{-})','p_{z}(#gamma#gamma)','p_{T}(#gamma#gamma)','E(#gamma#gamma)','M(#gamma#gamma)','#eta(#gamma#gamma)','#eta(#gamma)','Y(#gamma#gamma)']
+histoslog_varx   = ["(GeV)","(GeV)",'','(GeV)','','(GeV)',"(GeV)","(GeV)","(GeV)",'(GeV)','','(GeV)','(GeV)','(GeV)','(GeV)','','','']
 
 # 2D
 DDlog         = [DDmppmmumu,DDxipximu] 
@@ -103,7 +110,7 @@ plotlabel.SetFillColor(0);
 plotlabel.SetBorderSize(0);
 plotlabel.SetTextSize(0.035);
 plotlabel.SetTextFont(42);
-plotlabel.AddText("MadGraphv5 #bullet #sqrt{s}=14 TeV #bullet "+EVTINPUT+" evt");
+plotlabel.AddText("MadGraphv5 #bullet #sqrt{s}=13 TeV #bullet "+EVTINPUT+" evt");
 
 # Legend:
 leg = TLegend(0.55,0.72,0.75,0.87);
@@ -135,6 +142,8 @@ else: gPad.SetLogy(0);
 legs=0;
 for l in range(len(histoslog)):
     for m in range(NUMFILES):
+            if lumi:
+                histoslog[l][m].Scale(xsec[m]/Nevt*lumi*histoslog[l][m].GetBinWidth(1))
             if scale:
                     histoslog[l][m].Scale(xsec[m]/Nevt*histoslog[l][m].GetBinWidth(1));
             histoslog[l][m].SetLineColor(m+1);
@@ -165,6 +174,8 @@ for l in range(len(histoslog)):
             globals()["hs_histoslog"+str(l)].GetYaxis().SetTitle("d#sigma/d"+str(histoslog_axis[l])+str(histoslog_varx[l])+" (pb)");
     else:
             globals()["hs_histoslog"+str(l)].GetYaxis().SetTitle("Events");
+    if LUMI:
+            globals()["hs_histoslog"+str(l)].GetYaxis().SetTitle("Yield")
     globals()["hs_histoslog"+str(l)].GetXaxis().SetTitle(str(histoslog_axis[l])+" "+str(histoslog_varx[l]));
     globals()["hs_histoslog"+str(l)].GetXaxis().SetTitleFont(42);
     globals()["hs_histoslog"+str(l)].GetYaxis().SetTitleFont(42);
@@ -185,7 +196,7 @@ for l in range(len(histoslog)):
     leg.Draw("SAME");
     plotlabel.Draw("SAME");
     for k in range(len(FILE_TYPES)):
-    	canvas.Print(FILE_TYPES[k]+"/"+JOB+"_"+EVTINPUT+"evt_"+histoslog_label[l]+"."+FILE_TYPES[k]);
+        canvas.Print(FILE_TYPES[k]+"/"+JOB+"_"+EVTINPUT+"evt_"+histoslog_label[l]+"."+FILE_TYPES[k]);
     leg.Clear();
     if data:
         dataonly.SetLineStyle(2);

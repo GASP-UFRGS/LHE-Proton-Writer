@@ -10,11 +10,15 @@ setLog  = False
 filled  = False
 stacked = False
 data    = False
+LUMI    = False
 
 # EVENT SAMPLE INPUT
 Nevt    = 200000
 Nmax    = 10000
 SQRTS   = 14000
 
-FILES   = ["newevrectest.dat", 'newunweighted_events.3.5.lhe', 'fpmc_14tev.lhe', 'Artur_gammagammamumu-lpair_elel_pt10_14tev_20k.lhe']
+FILES   = ["samples/newevrectest.dat", 'samples/newunweighted_events.3.5.lhe', 'samples/fpmc_14tev.lhe', 'samples/Artur_gammagammamumu-lpair_elel_pt10_14tev_20k.lhe']
+
+# Luminosity
+lumi    = 150
 
