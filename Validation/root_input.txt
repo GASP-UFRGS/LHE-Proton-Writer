@@ -22,3 +22,6 @@ FILES   = ["samples/newevrectest.dat", 'samples/newunweighted_events.3.5.lhe', '
 # Luminosity
 lumi    = 150
 
+# Particles of interest
+IDS     = [2212, 13, -13]
+
