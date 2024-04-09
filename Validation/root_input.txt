@@ -23,5 +23,5 @@ FILES   = ["samples/newevrectest.dat", 'samples/newunweighted_events.3.5.lhe', '
 lumi    = 150
 
 # Particles of interest
-IDS     = [2212, 13, -13]
+IDS     = [13, -13]
 

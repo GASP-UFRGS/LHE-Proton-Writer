@@ -254,7 +254,7 @@ for i in range(len(FILES)):
             py = float(coll[7]);
             pz = float(coll[8]);
             en = float(coll[9]);
-            dpp.SetPxPyPzE(px,py,pz,en);
+            dpp.SetPxPyPzE(px,py,pz,en)
             first_proton = True
         elif coll[0] == '2212' and coll[1] == '1' and first_proton and abs(eval(coll[8])) < (SQRTS/2):
             dpm = TLorentzVector();
@@ -262,7 +262,7 @@ for i in range(len(FILES)):
             py = float(coll[7]);
             pz = float(coll[8]);
             en = float(coll[9]);
-            dpm.SetPxPyPzE(px,py,pz,en);
+            dpm.SetPxPyPzE(px,py,pz,en)
             first_proton = False
         # CLOSE EVENT AND FILL HISTOGRAMS:
         elif coll[0] == "</event>":
@@ -281,18 +281,17 @@ for i in range(len(FILES)):
                 and abs(dmu.Eta()) <= ETACUT):
                 # 1D:
                 #-------------------------Proton mesurements
-                if 2212 in IDS:
-                    protpz[i].Fill(dpp.Pz());
-                    protpz[i].Fill(dpm.Pz());
-                    proten[i].Fill(dpp.E())
-                    proten[i].Fill(dpm.E())
-                    protxi[i].Fill(1-(dpp.Pz()/(SQRTS/2)))
-                    protxi[i].Fill(1-(dpm.Pz()/(-(SQRTS/2))))
-                    mpp[i].Fill(sqrt((1-(dpp.Pz()/(SQRTS/2)))*(1-(dpm.Pz()/(-(SQRTS/2)))))*SQRTS)
-                    protpt[i].Fill(dpp.Pt())
-                    protpt[i].Fill(dpm.Pt())
-                    proteta[i].Fill(dpp.Eta())
-                    proteta[i].Fill(dpm.Eta())
+                protpz[i].Fill(dpp.Pz());
+                protpz[i].Fill(dpm.Pz());
+                proten[i].Fill(dpp.E())
+                proten[i].Fill(dpm.E())
+                protxi[i].Fill(1-(dpp.Pz()/(SQRTS/2)))
+                protxi[i].Fill(1-(dpm.Pz()/(-(SQRTS/2))))
+                mpp[i].Fill(sqrt((1-(dpp.Pz()/(SQRTS/2)))*(1-(dpm.Pz()/(-(SQRTS/2)))))*SQRTS)
+                protpt[i].Fill(dpp.Pt())
+                protpt[i].Fill(dpm.Pt())
+                proteta[i].Fill(dpp.Eta())
+                proteta[i].Fill(dpm.Eta())
                 #-------------------------Múon mesurements
                 if 13 in IDS or -13 in IDS:
                     mupz[i].Fill(dmu.Pz())
@@ -312,19 +311,20 @@ for i in range(len(FILES)):
                     phoen[i].Fill(dm.E())
                     phoen[i].Fill(dp.E())
                 #-------------------------Monopole mesurements
-                #mopz[i].Fill(dmo.Pz())
-                #moen[i].Fill(dmo.E())
-                #mopt[i].Fill(dmo.Pt())
+                if 90 in IDS:
+                    mopz[i].Fill(dmo.Pz())
+                    moen[i].Fill(dmo.E())
+                    mopt[i].Fill(dmo.Pt())
   
                 #-------------------------Mesurements for the KS test
-                if 22 in IDS and 13 in IDS and -13 in IDS:
+                if 13 in IDS and -13 in IDS:
                     KS_ivm_pp[i].append(sqrt((1-(dpp.Pz()/(SQRTS/2)))*(1-(dpm.Pz()/(-(SQRTS/2)))))*SQRTS)
                     KS_protxi[i].append(1-(dpp.Pz()/(SQRTS/2)))
                     KS_protxi[i].append(1-(dpm.Pz()/(-(SQRTS/2))))
                     KS_ivm_mu[i].append((dmu+damu).M())
   
                 # 2D:
-                if 22 in IDS and 13 in IDS and -13 in IDS:
+                if 13 in IDS and -13 in IDS:
                     DDmppmmumu[i].Fill(sqrt((1-(dpp.Pz()/(SQRTS/2)))*(1-(dpm.Pz()/(-(SQRTS//2)))))*SQRTS, (dmu+damu).M())
                     DDxipximu[i].Fill(1-(dpp.Pz()/(SQRTS/2)), (1/SQRTS)*(dmu.Pt()*exp(dmu.Eta())+damu.Pt()*exp(damu.Eta())))
   
@@ -384,18 +384,17 @@ for i in range(len(FILES)):
             elif not cuts:
                 # 1D:
                 #-------------------------Medidas dos prótons
-                if 2212 in IDS:
-                    protpz[i].Fill(dpp.Pz());
-                    protpz[i].Fill(dpm.Pz());
-                    proten[i].Fill(dpp.E())
-                    proten[i].Fill(dpm.E())
-                    protxi[i].Fill(1-(dpp.Pz()/(SQRTS/2)))
-                    protxi[i].Fill(1-(dpm.Pz()/(-(SQRTS/2))))
-                    mpp[i].Fill(sqrt((1-(dpp.Pz()/(SQRTS/2)))*(1-(dpm.Pz()/(-(SQRTS/2)))))*SQRTS)
-                    protpt[i].Fill(dpp.Pt())
-                    protpt[i].Fill(dpm.Pt())
-                    proteta[i].Fill(dpp.Eta())
-                    proteta[i].Fill(dpm.Eta())
+                protpz[i].Fill(dpp.Pz());
+                protpz[i].Fill(dpm.Pz());
+                proten[i].Fill(dpp.E())
+                proten[i].Fill(dpm.E())
+                protxi[i].Fill(1-(dpp.Pz()/(SQRTS/2)))
+                protxi[i].Fill(1-(dpm.Pz()/(-(SQRTS/2))))
+                mpp[i].Fill(sqrt((1-(dpp.Pz()/(SQRTS/2)))*(1-(dpm.Pz()/(-(SQRTS/2)))))*SQRTS)
+                protpt[i].Fill(dpp.Pt())
+                protpt[i].Fill(dpm.Pt())
+                proteta[i].Fill(dpp.Eta())
+                proteta[i].Fill(dpm.Eta())
                 #-------------------------Medidas dos Múons
                 if 13 in IDS and -13 in IDS:
                     mupz[i].Fill(dmu.Pz())
@@ -421,15 +420,15 @@ for i in range(len(FILES)):
                     phoY[i].Fill(dp.Y())
                     phoY[i].Fill(dm.Y())
                 #-------------------------Medidas do monopolo
-                #mopz[i].Fill(dmo.Pz())
-                #moen[i].Fill(dmo.E())
-                #mopt[i].Fill(dmo.Pt())
+                if 90 in IDS:
+                    mopz[i].Fill(dmo.Pz())
+                    moen[i].Fill(dmo.E())
+                    mopt[i].Fill(dmo.Pt())
   
                 # 2D:
-                if 22 in IDS and 13 in IDS and -13 in IDS:
+                if 13 in IDS and -13 in IDS:
                     DDmppmmumu[i].Fill(sqrt((1-(dpp.Pz()/(SQRTS/2)))*(1-(dpm.Pz()/(-(SQRTS//2)))))*SQRTS, (dmu+damu).M())
                     DDxipximu[i].Fill(1-(dpp.Pz()/(SQRTS/2)), (1/SQRTS)*(dmu.Pt()*exp(dmu.Eta())+damu.Pt()*exp(damu.Eta())))
-
 
                 evPASS += 1
         # End of loop over lines
@@ -445,23 +444,23 @@ for i in range(len(FILES)):
 #
 #############################################################
 
-#with open(f'ks-test.txt', 'w') as f:
-#    f.write('>>>>>>>KOLMOGOROV-SMIRNOV TEST<<<<<<<\n\n')
-#    f.write(f'Invariant-Mass protons\n')
-#    for i in range(4):
-#        for j in range(i+1, 4):
-#            ks = TMath.KolmogorovTest(len(KS_ivm_pp[i]), array('d', sorted(KS_ivm_pp[i])), len(KS_ivm_pp[j]), array('d', sorted(KS_ivm_pp[j])), 'D') 
-#            f.write(f'{PDF[i]:>10} X {PDF[j]:<10}: {ks}\n')
-#    f.write(f'\nInvariant-Mass leptons\n')
-#    for i in range(4):
-#        for j in range(i+1, 4):
-#            ks = TMath.KolmogorovTest(len(KS_ivm_mu[i]), array('d', sorted(KS_ivm_mu[i])), len(KS_ivm_mu[j]), array('d', sorted(KS_ivm_mu[j])), 'D')
-#            f.write(f'{PDF[i]:>10} X {PDF[j]:<10}: {ks}\n')
-#    f.write(f'\n\u03A7 of protons\n')
-#    for i in range(4):
-#        for j in range(i+1, 4):
-#            ks = TMath.KolmogorovTest(len(KS_protxi[i]), array('d', sorted(KS_protxi[i])), len(KS_protxi[j]), array('d', sorted(KS_protxi[j])), 'D')
-#            f.write(f'{PDF[i]:>10} X {PDF[j]:<10}: {ks}\n')
+with open(f'ks-test.txt', 'w') as f:
+    f.write('>>>>>>>KOLMOGOROV-SMIRNOV TEST<<<<<<<\n\n')
+    f.write(f'Invariant-Mass protons\n')
+    for i in range(4):
+        for j in range(i+1, 4):
+            ks = TMath.KolmogorovTest(len(KS_ivm_pp[i]), array('d', sorted(KS_ivm_pp[i])), len(KS_ivm_pp[j]), array('d', sorted(KS_ivm_pp[j])), 'D') 
+            f.write(f'{PDF[i]:>10} X {PDF[j]:<10}: {ks}\n')
+    f.write(f'\nInvariant-Mass leptons\n')
+    for i in range(4):
+        for j in range(i+1, 4):
+            ks = TMath.KolmogorovTest(len(KS_ivm_mu[i]), array('d', sorted(KS_ivm_mu[i])), len(KS_ivm_mu[j]), array('d', sorted(KS_ivm_mu[j])), 'D')
+            f.write(f'{PDF[i]:>10} X {PDF[j]:<10}: {ks}\n')
+    f.write(f'\n\u03A7 of protons\n')
+    for i in range(4):
+        for j in range(i+1, 4):
+            ks = TMath.KolmogorovTest(len(KS_protxi[i]), array('d', sorted(KS_protxi[i])), len(KS_protxi[j]), array('d', sorted(KS_protxi[j])), 'D')
+            f.write(f'{PDF[i]:>10} X {PDF[j]:<10}: {ks}\n')
 
 #############################################################
 #
