@@ -1,9 +1,9 @@
 import sys
-from ROOT import *
+from ROOT import TLorentzVector 
 '''
 Writes the protons into an LHE file from  MadGraph or Superchic 
 '''
-# Receives file name and generator of oringin as arguments
+# Receives file name and generator of origin as arguments
 path = sys.argv[1]
 generator = sys.argv[2].lower()
 new = 'new'+path
