@@ -15,18 +15,24 @@ printivm = False
 if(generator == 'madgraph'):
     flag0 = '<event>\n'
     flag1 = '</event>\n'
+    header = '</header>\n'
 if(generator == 'superchic'):
     flag0 = ' <event>\n'
     flag1 = ' </event>\n'
+    header = ' </header>\n'
 
 # Create list of lines from the LHE file and if needed finding the beginning of events 
 with open(path, 'r+') as f:
     lines = f.readlines()
-    if(generator == 'madgraph'): lines.index(flag0)
-    if(generator == 'superchic'): lines.index(flag0)	
+    if(generator == 'madgraph'):
+        lines.index(flag0)
+        beamenergy = int(float(lines[lines.index(header)+2].split()[2]))
+    if(generator == 'superchic'):
+        lines.index(flag0)
+        beamenergy = int(float(lines[lines.index(header)+2].split()[2]))
 
-pzini = 7000		# protons inicial pz 
-eini = 7000		# protons inicial energy
+pzini = beamenergy		# protons inicial pz 
+eini = beamenergy		# protons inicial energy
 
 # Proton rest mass: 0.9382720882E+00    # from: https://pdg.lbl.gov/2019/reviews/rpp2019-rev-phys-constants.pdf
 m0 = 0.9382720882
@@ -47,13 +53,22 @@ with open(new, 'w') as new:
                     pzp = pzini*sign - pzf
                     ef = eval(line[9])
                     ep = eini - ef
-                    if(generator == 'superchic'):
+                    if generator == 'superchic':
                         if sign > 0: lines.insert(i+j+2, ' '*13+f'2212{" "*8}1    0    0    0    0 {px} {py} +{pzp:.9e}  {ep:.9e}  {m0:.9e} 0. 1.\n')
                         else: lines.insert(i+j+2, ' '*13+f'2212{" "*8}1    0    0    0    0 {px} {py} {pzp:.9e}  {ep:.9e}  {m0:.9e} 0. -1.\n')
-                    if(generator == 'madgraph'):
+                    if generator == 'madgraph':
                         if sign > 0: lines.insert(i+j+2, ' '*5+f'2212{" "*2}1    0    0    0    0 +{0:.10e} +{0:.10e} +{pzp:.10e} {ep:.10e} {m0:.10e} {0:.4e} {1:.4e}\n')
                         else: lines.insert(i+j+2, ' '*5+f'2212{" "*2}1    0    0    0    0 -{0:.10e} -{0:.10e} {pzp:.10e} {ep:.10e} {m0:.10e} {0:.4e} {-1:.4e}\n')
                 j += 1
+            neweventheader = lines[i+1].split()
+            if generator == 'superchic':
+                neweventheader[0] = ' '+str(int(neweventheader[0])+2)
+                lines.pop(i+1)
+                lines.insert(i+1, '    '.join(neweventheader)+'\n')
+            if generator == 'madgraph':
+                neweventheader[0] = ' '+str(int(neweventheader[0])+2)+'     '
+                lines.pop(i+1)
+                lines.insert(i+1, ' '.join(neweventheader)+'\n')
         i += 1
         if i == len(lines): break
     for line in lines:
