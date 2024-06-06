@@ -100,7 +100,7 @@ NUMFILES = len(histoslog[0])
 # Starting Drawing step:
 
 # SETTING THE NUMBER OF DIGITS ON AXIS
-TGaxis.SetMaxDigits(2)
+#TGaxis.SetMaxDigits(2)
 
 # Defining the top label in the plots:
 plotlabel = TPaveText(0.50,0.91,0.84,0.95,"NDC");
@@ -110,7 +110,7 @@ plotlabel.SetFillColor(0);
 plotlabel.SetBorderSize(0);
 plotlabel.SetTextSize(0.035);
 plotlabel.SetTextFont(42);
-plotlabel.AddText("MadGraphv5 #bullet #sqrt{s}=13 TeV #bullet "+EVTINPUT+" evt");
+plotlabel.AddText("MadGraphv5 #bullet #sqrt{s}="+f'{SQRTS/(10**3):.0f}'+" TeV #bullet "+EVTINPUT+" evt");
 
 # Legend:
 leg = TLegend(0.55,0.72,0.75,0.87);
@@ -142,7 +142,7 @@ else: gPad.SetLogy(0);
 legs=0;
 for l in range(len(histoslog)):
     for m in range(NUMFILES):
-            if lumi:
+            if LUMI:
                 histoslog[l][m].Scale(xsec[m]/Nevt*lumi*histoslog[l][m].GetBinWidth(1))
             if scale:
                     histoslog[l][m].Scale(xsec[m]/Nevt*histoslog[l][m].GetBinWidth(1));

@@ -1,7 +1,7 @@
 from __future__ import division
 from subprocess import call
 from math import *
-from ROOT import TLorentzVector, TFile, TH1D, TH2D
+from ROOT import TLorentzVector, TFile, TH1D, TH2D, TMath
 from array import array
 import numpy as np
 
@@ -144,21 +144,21 @@ for i in range(len(FILES)):
     # EACH ARRAYS IS FORMATTED LIKE: array[] = [plots_file1, plots_file2, plots_file3, ...
 
     # 1D
-    protpz.append(TH1D("1D_protpz"+"_"+PDF[i]       , "", 50,4300., 7200.))
-    proten.append(TH1D("1D_proten"+"_"+PDF[i]       , "", 50,4300., 7200.))
-    protxi.append(TH1D("1D_protxi"+"_"+PDF[i]       , "", 50,-0.003,0.03))
+    protpz.append(TH1D("1D_protpz"+"_"+PDF[i]       , "", 50,4000., 7000.))
+    proten.append(TH1D("1D_proten"+"_"+PDF[i]       , "", 50,0., 10000.))
+    protxi.append(TH1D("1D_protxi"+"_"+PDF[i]       , "", 50,-0.003,0.4))
     protpt.append(TH1D("1D_protpt"+"_"+PDF[i]       , "", 50,-0.1, 1.))
     proteta.append(TH1D("1D_proteta"+"_"+PDF[i]       , "", 50,-20., 20.))
-    mpp.append(TH1D("1D_mpp"+"_"+PDF[i]       , "", 50,0., 120.))
+    mpp.append(TH1D("1D_mpp"+"_"+PDF[i]       , "", 50,-10., 12000.))
     mupz.append(TH1D("1D_mupz"+"_"+PDF[i]       , "", 50,-2500.,2500.))
     muen.append(TH1D("1D_muen"+"_"+PDF[i]       , "", 50,-100., 900.))
     mupt.append(TH1D("1D_mupt"+"_"+PDF[i]       , "", 50,-5., 40.0))
     ivmmu.append(TH1D("1D_ivmmu"+"_"+PDF[i]       , "", 50,0., 120.0))
     mueta.append(TH1D("1D_mueta"+"_"+PDF[i]       , "", 50,-15., 15.))
     phopz.append(TH1D("1D_phopz"+"_"+PDF[i]       , "", 50,-10000., 10000.))
-    phopt.append(TH1D("1D_phopt"+"_"+PDF[i]       , "", 50,0., 8000.))
+    phopt.append(TH1D("1D_phopt"+"_"+PDF[i]       , "", 50,0., 50.))
     phoen.append(TH1D("1D_phoen"+"_"+PDF[i]       , "", 50,-100., 5000.))
-    phoivm.append(TH1D("1D_phoivm"+"_"+PDF[i]     , "", 50, -1000, 10000))
+    phoivm.append(TH1D("1D_phoivm"+"_"+PDF[i]     , "", 50, 20, 350))
     phopsrap2.append(TH1D('1D_phopsrap2'+'_'+PDF[i] , '', 50, -1, 1))
     phopsrap1.append(TH1D('1D_phopsrap1'+'_'+PDF[i] , '', 50, -10, 10))
     phoY.append(TH1D('1D_phoY'+'_'+PDF[i]         , '', 50, -10000, 10000))
@@ -174,7 +174,7 @@ for i in range(len(FILES)):
 
     # Flags for differentiating particles
     first_photon = False
-    first_muon    = False
+    first_muon   = False
     first_proton = False
 
     # RESET EVENT COUNTING:
@@ -182,10 +182,10 @@ for i in range(len(FILES)):
     evPASS = 0;
     # START LOOP: <<<<<<<<<<<<<<<<!!! REMMEMBER TO COUNT CORRECTLY HERE
     if (i == 0):
-        for j in range(87): # skip first 434 lines to avoid comments
+        for j in range(344): # skip first 434 lines to avoid comments
             f.readline()
     elif (i == 1):
-        for j in range(401): # skip first 431 lines to avoid comments
+        for j in range(344): # skip first 431 lines to avoid comments
             f.readline()
     elif (i == 2):
         for j in range(7): # skip first 430 lines to avoid comments
@@ -281,17 +281,18 @@ for i in range(len(FILES)):
                 and abs(dmu.Eta()) <= ETACUT):
                 # 1D:
                 #-------------------------Proton mesurements
-                protpz[i].Fill(dpp.Pz());
-                protpz[i].Fill(dpm.Pz());
-                proten[i].Fill(dpp.E())
-                proten[i].Fill(dpm.E())
-                protxi[i].Fill(1-(dpp.Pz()/(SQRTS/2)))
-                protxi[i].Fill(1-(dpm.Pz()/(-(SQRTS/2))))
-                mpp[i].Fill(sqrt((1-(dpp.Pz()/(SQRTS/2)))*(1-(dpm.Pz()/(-(SQRTS/2)))))*SQRTS)
-                protpt[i].Fill(dpp.Pt())
-                protpt[i].Fill(dpm.Pt())
-                proteta[i].Fill(dpp.Eta())
-                proteta[i].Fill(dpm.Eta())
+                if 2212 in IDS:
+                    protpz[i].Fill(dpp.Pz());
+                    protpz[i].Fill(dpm.Pz());
+                    proten[i].Fill(dpp.E())
+                    proten[i].Fill(dpm.E())
+                    protxi[i].Fill(1-(dpp.Pz()/(SQRTS/2)))
+                    protxi[i].Fill(1-(dpm.Pz()/(-(SQRTS/2))))
+                    mpp[i].Fill(sqrt((1-(dpp.Pz()/(SQRTS/2)))*(1-(dpm.Pz()/(-(SQRTS/2)))))*SQRTS)
+                    protpt[i].Fill(dpp.Pt())
+                    protpt[i].Fill(dpm.Pt())
+                    proteta[i].Fill(dpp.Eta())
+                    proteta[i].Fill(dpm.Eta())
                 #-------------------------Múon mesurements
                 if 13 in IDS or -13 in IDS:
                     mupz[i].Fill(dmu.Pz())
@@ -384,17 +385,18 @@ for i in range(len(FILES)):
             elif not cuts:
                 # 1D:
                 #-------------------------Medidas dos prótons
-                protpz[i].Fill(dpp.Pz());
-                protpz[i].Fill(dpm.Pz());
-                proten[i].Fill(dpp.E())
-                proten[i].Fill(dpm.E())
-                protxi[i].Fill(1-(dpp.Pz()/(SQRTS/2)))
-                protxi[i].Fill(1-(dpm.Pz()/(-(SQRTS/2))))
-                mpp[i].Fill(sqrt((1-(dpp.Pz()/(SQRTS/2)))*(1-(dpm.Pz()/(-(SQRTS/2)))))*SQRTS)
-                protpt[i].Fill(dpp.Pt())
-                protpt[i].Fill(dpm.Pt())
-                proteta[i].Fill(dpp.Eta())
-                proteta[i].Fill(dpm.Eta())
+                if 2212 in IDS:
+                    protpz[i].Fill(dpp.Pz());
+                    protpz[i].Fill(dpm.Pz());
+                    proten[i].Fill(dpp.E())
+                    proten[i].Fill(dpm.E())
+                    protxi[i].Fill(1-(dpp.Pz()/(SQRTS/2)))
+                    protxi[i].Fill(1-(dpm.Pz()/(-(SQRTS/2))))
+                    mpp[i].Fill(sqrt((1-(dpp.Pz()/(SQRTS/2)))*(1-(dpm.Pz()/(-(SQRTS/2)))))*SQRTS)
+                    protpt[i].Fill(dpp.Pt())
+                    protpt[i].Fill(dpm.Pt())
+                    proteta[i].Fill(dpp.Eta())
+                    proteta[i].Fill(dpm.Eta())
                 #-------------------------Medidas dos Múons
                 if 13 in IDS and -13 in IDS:
                     mupz[i].Fill(dmu.Pz())
@@ -424,7 +426,6 @@ for i in range(len(FILES)):
                     mopz[i].Fill(dmo.Pz())
                     moen[i].Fill(dmo.E())
                     mopt[i].Fill(dmo.Pt())
-  
                 # 2D:
                 if 13 in IDS and -13 in IDS:
                     DDmppmmumu[i].Fill(sqrt((1-(dpp.Pz()/(SQRTS/2)))*(1-(dpm.Pz()/(-(SQRTS//2)))))*SQRTS, (dmu+damu).M())
@@ -444,23 +445,23 @@ for i in range(len(FILES)):
 #
 #############################################################
 
-with open(f'ks-test.txt', 'w') as f:
-    f.write('>>>>>>>KOLMOGOROV-SMIRNOV TEST<<<<<<<\n\n')
-    f.write(f'Invariant-Mass protons\n')
-    for i in range(4):
-        for j in range(i+1, 4):
-            ks = TMath.KolmogorovTest(len(KS_ivm_pp[i]), array('d', sorted(KS_ivm_pp[i])), len(KS_ivm_pp[j]), array('d', sorted(KS_ivm_pp[j])), 'D') 
-            f.write(f'{PDF[i]:>10} X {PDF[j]:<10}: {ks}\n')
-    f.write(f'\nInvariant-Mass leptons\n')
-    for i in range(4):
-        for j in range(i+1, 4):
-            ks = TMath.KolmogorovTest(len(KS_ivm_mu[i]), array('d', sorted(KS_ivm_mu[i])), len(KS_ivm_mu[j]), array('d', sorted(KS_ivm_mu[j])), 'D')
-            f.write(f'{PDF[i]:>10} X {PDF[j]:<10}: {ks}\n')
-    f.write(f'\n\u03A7 of protons\n')
-    for i in range(4):
-        for j in range(i+1, 4):
-            ks = TMath.KolmogorovTest(len(KS_protxi[i]), array('d', sorted(KS_protxi[i])), len(KS_protxi[j]), array('d', sorted(KS_protxi[j])), 'D')
-            f.write(f'{PDF[i]:>10} X {PDF[j]:<10}: {ks}\n')
+#with open(f'ks-test.txt', 'w') as f:
+#    f.write('>>>>>>>KOLMOGOROV-SMIRNOV TEST<<<<<<<\n\n')
+#    f.write(f'Invariant-Mass protons\n')
+#    for i in range(4):
+#        for j in range(i+1, 4):
+#            ks = TMath.KolmogorovTest(len(KS_ivm_pp[i]), array('d', sorted(KS_ivm_pp[i])), len(KS_ivm_pp[j]), array('d', sorted(KS_ivm_pp[j])), 'D') 
+#            f.write(f'{PDF[i]:>10} X {PDF[j]:<10}: {ks}\n')
+#    f.write(f'\nInvariant-Mass leptons\n')
+#    for i in range(4):
+#        for j in range(i+1, 4):
+#            ks = TMath.KolmogorovTest(len(KS_ivm_mu[i]), array('d', sorted(KS_ivm_mu[i])), len(KS_ivm_mu[j]), array('d', sorted(KS_ivm_mu[j])), 'D')
+#            f.write(f'{PDF[i]:>10} X {PDF[j]:<10}: {ks}\n')
+#    f.write(f'\n\u03A7 of protons\n')
+#    for i in range(4):
+#        for j in range(i+1, 4):
+#            ks = TMath.KolmogorovTest(len(KS_protxi[i]), array('d', sorted(KS_protxi[i])), len(KS_protxi[j]), array('d', sorted(KS_protxi[j])), 'D')
+#            f.write(f'{PDF[i]:>10} X {PDF[j]:<10}: {ks}\n')
 
 #############################################################
 #
