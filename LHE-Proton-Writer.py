@@ -44,7 +44,7 @@ with open(new, 'w') as new:
         if lines[i] == flag0:
             j = 0
             while lines[i+j] != flag1:
-                if lines[i+j].split()[0] == '22':
+                if lines[i+j].split()[0] == '22' and lines[i+j].split()[1] == '1':
                     line = lines[i+j].split()
                     px = f'{-eval(lines[i+j].split()[6]):.9e}' if -eval(line[6]) < 0 else f'+{-eval(lines[i+j].split()[6]):.9e}'
                     py = f'{-eval(lines[i+j].split()[7]):.9e}' if -eval(line[7]) < 0 else f'+{-eval(lines[i+j].split()[7]):.9e}'

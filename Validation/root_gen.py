@@ -100,11 +100,11 @@ proten       = []
 protxi       = []
 protpt       = []
 proteta      = []
-mpp          = []
+ivmprot        = []
 mupz         = []
 muen         = []
 mupt         = []
-ivmmu       = []
+ivmmu        = []
 mueta        = []
 phopz        = []
 phopt        = []
@@ -115,17 +115,17 @@ phopsrap1    = []
 phoY         = []
 
 # 2D:
-DDmppmmumu   = []
+DDivmprotmmumu   = []
 DDxipximu    = []
 
 
 # SORTING THE DISTRIBUTIONS WITHIN THE SETS:
 
 # 1D
-histoslog  = [protpz,proten,protxi,protpt,proteta,mpp,mupz,muen,mupt,ivmmu,mueta,phopz,phopt,phoen,phoivm,phopsrap2,phopsrap1,phoY]
+histoslog  = [protpz,proten,protxi,protpt,proteta,ivmprot,mupz,muen,mupt,ivmmu,mueta,phopz,phopt,phoen,phoivm,phopsrap2,phopsrap1,phoY]
 
 # 2D
-DDlog      = [DDmppmmumu,DDxipximu] 
+DDlog      = [DDivmprotmmumu,DDxipximu] 
 
 #------------ Lists for KS test ----------------------
 
@@ -149,7 +149,7 @@ for i in range(len(FILES)):
     protxi.append(TH1D("1D_protxi"+"_"+PDF[i]       , "", 50,-0.003,0.4))
     protpt.append(TH1D("1D_protpt"+"_"+PDF[i]       , "", 50,-0.1, 1.))
     proteta.append(TH1D("1D_proteta"+"_"+PDF[i]       , "", 50,-20., 20.))
-    mpp.append(TH1D("1D_mpp"+"_"+PDF[i]       , "", 50,-10., 12000.))
+    ivmprot.append(TH1D("1D_ivmprot"+"_"+PDF[i]       , "", 50,-10., 12000.))
     mupz.append(TH1D("1D_mupz"+"_"+PDF[i]       , "", 50,-2500.,2500.))
     muen.append(TH1D("1D_muen"+"_"+PDF[i]       , "", 50,-100., 900.))
     mupt.append(TH1D("1D_mupt"+"_"+PDF[i]       , "", 50,-5., 40.0))
@@ -167,7 +167,7 @@ for i in range(len(FILES)):
     #mopt.append(TH1D("1D_mupt"+"_"+PDF[i]       , "", 50,-5., 40.0))
 
     # 2D
-    DDmppmmumu.append(TH2D('2D_DDmppmmumu_'+PDF[i]       , '', 50, 0., 1400., 50, 0., 1400.))
+    DDivmprotmmumu.append(TH2D('2D_DDivmprotmmumu_'+PDF[i]       , '', 50, 0., 1400., 50, 0., 1400.))
     DDxipximu.append(TH2D('2D_DDxipximu_'+PDF[i]     , '', 50, 0., 1., 50, 0., 1.))
 
     # LOOP OVER LINES IN LHE SAMPLE:
@@ -288,7 +288,7 @@ for i in range(len(FILES)):
                     proten[i].Fill(dpm.E())
                     protxi[i].Fill(1-(dpp.Pz()/(SQRTS/2)))
                     protxi[i].Fill(1-(dpm.Pz()/(-(SQRTS/2))))
-                    mpp[i].Fill(sqrt((1-(dpp.Pz()/(SQRTS/2)))*(1-(dpm.Pz()/(-(SQRTS/2)))))*SQRTS)
+                    ivmprot[i].Fill(sqrt((1-(dpp.Pz()/(SQRTS/2)))*(1-(dpm.Pz()/(-(SQRTS/2)))))*SQRTS)
                     protpt[i].Fill(dpp.Pt())
                     protpt[i].Fill(dpm.Pt())
                     proteta[i].Fill(dpp.Eta())
@@ -326,7 +326,7 @@ for i in range(len(FILES)):
   
                 # 2D:
                 if 13 in IDS and -13 in IDS:
-                    DDmppmmumu[i].Fill(sqrt((1-(dpp.Pz()/(SQRTS/2)))*(1-(dpm.Pz()/(-(SQRTS//2)))))*SQRTS, (dmu+damu).M())
+                    DDivmprotmmumu[i].Fill(sqrt((1-(dpp.Pz()/(SQRTS/2)))*(1-(dpm.Pz()/(-(SQRTS//2)))))*SQRTS, (dmu+damu).M())
                     DDxipximu[i].Fill(1-(dpp.Pz()/(SQRTS/2)), (1/SQRTS)*(dmu.Pt()*exp(dmu.Eta())+damu.Pt()*exp(damu.Eta())))
   
                 evPASS += 1;
@@ -392,7 +392,7 @@ for i in range(len(FILES)):
                     proten[i].Fill(dpm.E())
                     protxi[i].Fill(1-(dpp.Pz()/(SQRTS/2)))
                     protxi[i].Fill(1-(dpm.Pz()/(-(SQRTS/2))))
-                    mpp[i].Fill(sqrt((1-(dpp.Pz()/(SQRTS/2)))*(1-(dpm.Pz()/(-(SQRTS/2)))))*SQRTS)
+                    ivmprot[i].Fill(sqrt((1-(dpp.Pz()/(SQRTS/2)))*(1-(dpm.Pz()/(-(SQRTS/2)))))*SQRTS)
                     protpt[i].Fill(dpp.Pt())
                     protpt[i].Fill(dpm.Pt())
                     proteta[i].Fill(dpp.Eta())
@@ -428,7 +428,7 @@ for i in range(len(FILES)):
                     mopt[i].Fill(dmo.Pt())
                 # 2D:
                 if 13 in IDS and -13 in IDS:
-                    DDmppmmumu[i].Fill(sqrt((1-(dpp.Pz()/(SQRTS/2)))*(1-(dpm.Pz()/(-(SQRTS//2)))))*SQRTS, (dmu+damu).M())
+                    DDivmprotmmumu[i].Fill(sqrt((1-(dpp.Pz()/(SQRTS/2)))*(1-(dpm.Pz()/(-(SQRTS//2)))))*SQRTS, (dmu+damu).M())
                     DDxipximu[i].Fill(1-(dpp.Pz()/(SQRTS/2)), (1/SQRTS)*(dmu.Pt()*exp(dmu.Eta())+damu.Pt()*exp(damu.Eta())))
 
                 evPASS += 1
