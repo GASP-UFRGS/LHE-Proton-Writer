@@ -3,9 +3,14 @@ from ROOT import TLorentzVector
 '''
 Writes the protons into an LHE file from  MadGraph or Superchic 
 '''
-# Receives file name and generator of origin as arguments
-path = sys.argv[1]
-generator = sys.argv[2].lower()
+# Receives particle ID, file name and generator of origin as arguments
+if len(sys.argv) != 4:
+    print('Missing arguments')
+    sys.exit()
+
+ID = str(sys.argv[1])
+path = sys.argv[2]
+generator = sys.argv[3].lower()
 new = 'new'+path
 
 # Flag for printing the Invariant Mass of protons and leptons
@@ -44,7 +49,7 @@ with open(new, 'w') as new:
         if lines[i] == flag0:
             j = 0
             while lines[i+j] != flag1:
-                if lines[i+j].split()[0] == '22' and lines[i+j].split()[1] == '1':
+                if lines[i+j].split()[0] == ID and lines[i+j].split()[1] == '-1':
                     line = lines[i+j].split()
                     px = f'{-eval(lines[i+j].split()[6]):.9e}' if -eval(line[6]) < 0 else f'+{-eval(lines[i+j].split()[6]):.9e}'
                     py = f'{-eval(lines[i+j].split()[7]):.9e}' if -eval(line[7]) < 0 else f'+{-eval(lines[i+j].split()[7]):.9e}'
