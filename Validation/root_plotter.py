@@ -220,7 +220,7 @@ canvas.SetRightMargin(0.23);
 canvas.SetFrameFillColor(887);
 gPad.SetLogy(0);
 for l in range(len(DDlog)):
-    if 13 not in IDS and -13 not in IDS and 2212 not in IDS and 'mu' in DDlog_label[l] and 'prot' in DDlog_label:
+    if 13 not in IDS and -13 not in IDS and 2212 not in IDS or 'mu' in DDlog_label[l] or 'prot' in DDlog_label[l]:
         continue
 
     for m in range(NUMFILES):
@@ -244,7 +244,7 @@ for l in range(len(DDlog)):
         DDlog[l][m].GetYaxis().SetLabelSize(0.04);
         DDlog[l][m].GetZaxis().SetLabelSize(0.04);
         if (scale):
-            DDlog[l][m].GetZaxis().SetTitle("d#sigma/d"+str(DDlog_xaxis[l])+"d"+str(DDlog_yaxis[l])+str(DDlog_varz[l]));
+            DDlog[l][m].GetZaxis().SetTitle("d#sigma/d"+str(DDlog_xaxis[l])+"d"+str(DDlog_yaxis[l]));
         else:
             DDlog[l][m].GetZaxis().SetTitle("Events");
         DDlog[l][m].GetYaxis().SetTitle(DDlog_yaxis[l]+" "+DDlog_vary[l]+"");
