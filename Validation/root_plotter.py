@@ -73,7 +73,7 @@ phopsrap1    = []
 phoY         = []
 
 # 2D:
-DDmppmmumu   = []
+DDivmprotmmumu   = []
 DDxipximu    = []
 
 # READING FROM ROOT FILE AND ALLOCATING DATA IN LISTS
@@ -89,8 +89,8 @@ histoslog_axis   = ["p_{z}(p)","E(p)",'#chi(p)','p_{T}(p)','#eta(p^{+}p^{-})','M
 histoslog_varx   = ["(GeV)","(GeV)",'','(GeV)','','(GeV)',"(GeV)","(GeV)","(GeV)",'(GeV)','','(GeV)','(GeV)','(GeV)','(GeV)','','','']
 
 # 2D
-DDlog         = [DDmppmmumu,DDxipximu] 
-DDlog_label   = ["2Dmppmmumu",'2Dxipximu'];
+DDlog         = [DDivmprotmmumu,DDxipximu] 
+DDlog_label   = ["2Divmprotmmumu",'2Dxipximu'];
 DDlog_xaxis   = ["M(p^{+}p^{-})",'#xi(p^{+})']
 DDlog_yaxis   = ["M(#mu^{+}#mu^{-})",'#xi(#mu^{+}#mu^{-})']
 DDlog_varx    = ["(GeV)",'']
