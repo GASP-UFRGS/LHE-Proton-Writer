@@ -34,18 +34,18 @@ IDS     = eval(rootinput[1][15])
 
 
 # KINEMATICAL CUTS: #FIXME
-INVMCUTUPPER = 14000.0; # (NO CUT 9999.0 )
-INVMCUTLOWER = 10.0; # (NO CUT 0.0)
+INVMCUTUPPER   =eval(rootinput[1][16])
+INVMCUTLOWER   =eval(rootinput[1][17])
 
-PTPAIRCUTUPPER = 9999.0; # (NO CUT 0.0 )
-PTPAIRCUTLOWER = 0.0; # (NO CUT 0.0)
+PTPAIRCUTUPPER =eval(rootinput[1][18])
+PTPAIRCUTLOWER =eval(rootinput[1][19])
 
-ETACUT = 2.5  # NO CUT: INNER TURE, ETACUT = 20
-ETAPAIRCUT = 5000.; # (NO CUT 100.)
-INNER = True; # (TRUE: -x < y < +x ; FALSE: y < -x AND y > +x)
+ETACUT         =eval(rootinput[1][20])
+ETAPAIRCUT     =eval(rootinput[1][21])
+INNER          =eval(rootinput[1][22])
 
-PTCUTUPPER = 9999.0; # (NO CUT 9999.0 )
-PTCUTLOWER = 10.0; # (NO CUT 0.0)
+PTCUTUPPER     =eval(rootinput[1][23])
+PTCUTLOWER     =eval(rootinput[1][24])
 
 # INPUT FILES:
 
