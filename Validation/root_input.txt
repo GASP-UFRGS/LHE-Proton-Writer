@@ -25,7 +25,7 @@ lumi    = 150
 # Particles of interest
 IDS     = [2212, 22]
 
-# Kinematical Cuts
+# Kinematical Cuts if cuts == True:
 INVMCUTUPPER = 14000.0 # (NO CUT 9999.0 )
 INVMCUTLOWER = 10.0 # (NO CUT 0.0)
 
