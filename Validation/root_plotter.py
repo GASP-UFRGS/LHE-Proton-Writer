@@ -78,7 +78,7 @@ DDxipximu    = []
 
 # READING FROM ROOT FILE AND ALLOCATING DATA IN LISTS
 for k in keys:
-    name = k.GetName().split('_')[1]
+    name = k.GetName().split('_')[2]
     eval(name).append(k.ReadObj())
 
 # THE ARRAYS STORE THE LABELS FOR AXIS AND UNITS:
