@@ -5,7 +5,7 @@ xsec    = [1.752000e-03,3.598700e+02]
 JOB     = "histos"
 PDF     = ['aaaa','ppaa']
 scale   = False
-cuts    = False 
+cuts    = True 
 setLog  = False
 filled  = False
 stacked = False
@@ -37,5 +37,5 @@ ETAPAIRCUT = 5000. # (NO CUT 100.)
 INNER = True # (TRUE: -x < y < +x ; FALSE: y < -x AND y > +x)
 
 PTCUTUPPER = 9999.0 # (NO CUT 9999.0 )
-PTCUTLOWER = 10.0 # (NO CUT 0.0)
+PTCUTLOWER = 15.0 # (NO CUT 0.0)
 
