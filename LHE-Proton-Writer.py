@@ -12,8 +12,8 @@ if len(sys.argv) != 4:
 ID = str(sys.argv[1])
 path = sys.argv[2]
 generator = sys.argv[3].lower()
-if ( generator != "madgraph" or generator != "superchic"):
-    print('Generator unsupported. Exiting.')
+if not generator == 'madgraph' or generator == 'superchic':
+    print('<<'+generator+'>> generator unsupported. Exiting.')
     sys.exit()
 new = 'new_'+path
 
@@ -57,6 +57,7 @@ with open(new, 'w') as new:
                     line = lines[i+j].split()
                     px = f'{-eval(lines[i+j].split()[6]):.9e}' if -eval(line[6]) < 0 else f'+{-eval(lines[i+j].split()[6]):.9e}'
                     py = f'{-eval(lines[i+j].split()[7]):.9e}' if -eval(line[7]) < 0 else f'+{-eval(lines[i+j].split()[7]):.9e}'
+                    print('oi')
                     pzf = eval(line[8])
                     sign = (pzf/abs(pzf))
                     pzp = pzini*sign - pzf
