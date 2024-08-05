@@ -12,7 +12,10 @@ if len(sys.argv) != 4:
 ID = str(sys.argv[1])
 path = sys.argv[2]
 generator = sys.argv[3].lower()
-new = 'new'+path
+if ( generator != "madgraph" or generator != "superchic"):
+    print('Generator unsupported. Exiting.')
+    sys.exit()
+new = 'new_'+path
 
 # Flag for printing the Invariant Mass of protons and leptons
 printivm = False
