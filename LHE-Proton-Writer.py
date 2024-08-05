@@ -13,7 +13,7 @@ ID = str(sys.argv[1])
 path = sys.argv[2]
 generator = sys.argv[3].lower()
 if not generator == 'madgraph' or generator == 'superchic':
-    print('<<'+generator+'>> generator unsupported. Exiting.')
+    print('<<'+generator+'>> generator unsupported. Only "madgraph" and "superchic" are supported. Exiting.')
     sys.exit()
 new = 'new_'+path
 
