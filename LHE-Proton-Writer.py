@@ -20,6 +20,15 @@ new = 'new_'+path
 # Flag for printing the Invariant Mass of protons and leptons
 printivm = False
 
+# Fill lines:
+def func_fill(_gen):
+    if _gen == 'superchic':
+        if sign > 0: lines.insert(i+j+2, ' '*13+f'2212{" "*8}1    0    0    0    0 {px} {py} +{pzp:.9e}  {ep:.9e}  {m0:.9e} 0. 1.\n')
+        else: lines.insert(i+j+2, ' '*13+f'2212{" "*8}1    0    0    0    0 {px} {py} {pzp:.9e}  {ep:.9e}  {m0:.9e} 0. -1.\n')
+    elif _gen == 'madgraph':
+        if sign > 0: lines.insert(i+j+2, ' '*5+f'2212{" "*2}1    0    0    0    0 +{0:.10e} +{0:.10e} +{pzp:.10e} {ep:.10e} {m0:.10e} {0:.4e} {1:.4e}\n')
+        else: lines.insert(i+j+2, ' '*5+f'2212{" "*2}1    0    0    0    0 -{0:.10e} -{0:.10e} {pzp:.10e} {ep:.10e} {m0:.10e} {0:.4e} {-1:.4e}\n')
+
 # Setting flags according to chosen generator
 if(generator == 'madgraph'):
     flag0 = '<event>\n'
@@ -63,12 +72,7 @@ with open(new, 'w') as new:
                     pzp = pzini*sign - pzf
                     ef = eval(line[9])
                     ep = eini - ef
-                    if generator == 'superchic':
-                        if sign > 0: lines.insert(i+j+2, ' '*13+f'2212{" "*8}1    0    0    0    0 {px} {py} +{pzp:.9e}  {ep:.9e}  {m0:.9e} 0. 1.\n')
-                        else: lines.insert(i+j+2, ' '*13+f'2212{" "*8}1    0    0    0    0 {px} {py} {pzp:.9e}  {ep:.9e}  {m0:.9e} 0. -1.\n')
-                    if generator == 'madgraph':
-                        if sign > 0: lines.insert(i+j+2, ' '*5+f'2212{" "*2}1    0    0    0    0 +{0:.10e} +{0:.10e} +{pzp:.10e} {ep:.10e} {m0:.10e} {0:.4e} {1:.4e}\n')
-                        else: lines.insert(i+j+2, ' '*5+f'2212{" "*2}1    0    0    0    0 -{0:.10e} -{0:.10e} {pzp:.10e} {ep:.10e} {m0:.10e} {0:.4e} {-1:.4e}\n')
+                    func_fill(generator)
                 j += 1
             neweventheader = lines[i+1].split()
             if generator == 'superchic':
