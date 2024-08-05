@@ -57,7 +57,6 @@ with open(new, 'w') as new:
                     line = lines[i+j].split()
                     px = f'{-eval(lines[i+j].split()[6]):.9e}' if -eval(line[6]) < 0 else f'+{-eval(lines[i+j].split()[6]):.9e}'
                     py = f'{-eval(lines[i+j].split()[7]):.9e}' if -eval(line[7]) < 0 else f'+{-eval(lines[i+j].split()[7]):.9e}'
-                    print('oi')
                     pzf = eval(line[8])
                     sign = (pzf/abs(pzf))
                     pzp = pzini*sign - pzf
