@@ -5,14 +5,17 @@ Writes the protons into an LHE file from  MadGraph or Superchic
 '''
 # Receives particle ID, file name and generator of origin as arguments
 if len(sys.argv) != 4:
-    print('Missing argument, correct syntax as follows:')
-    print('python3 LHE-Proton-Writer.py <ID> <path of .lhe file> <generator of origin>')
+    print('Missing arguments')
+    print('Syntax: python3 LHE-Proton-Writer.py <id> <input> <generator>')
     sys.exit()
 
 ID = str(sys.argv[1])
 path = sys.argv[2]
 generator = sys.argv[3].lower()
-new = 'new'+path
+if not generator == 'madgraph' or generator == 'superchic':
+    print('<<'+generator+'>> generator unsupported. Only "madgraph" and "superchic" are supported. Exiting.')
+    sys.exit()
+new = 'new_'+path
 
 # Flag for printing the Invariant Mass of protons and leptons
 printivm = False
