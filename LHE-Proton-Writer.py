@@ -3,16 +3,20 @@ from ROOT import TLorentzVector
 '''
 Writes the protons into an LHE file from  MadGraph or Superchic 
 '''
-# Receives particle ID, file name and generator of origin as arguments
+# Receives file path, generator of origin and particle IDs as arguments
 if len(sys.argv) < 4:
-    print('Missing argument, correct syntax as follows:')
-    print('python3 LHE-Proton-Writer.py <path of .lhe file> <generator of origin> <IDs>')
+    print('Missing arguments')
+    print('Syntax: python3 LHE-Proton-Writer.py <path of .lhe file> <generator of origin> <IDs>')
     sys.exit()
 
 path = sys.argv[1]
 generator = sys.argv[2].lower()
 ID = sys.argv[3:]
 new = 'new'+path
+
+if not generator == 'madgraph' or generator == 'superchic':
+    print('<<'+generator+'>> generator unsupported. Only "madgraph" and "superchic" are supported. Exiting.')
+    sys.exit()
 
 # Flag for printing the Invariant Mass of protons and leptons
 printivm = False
