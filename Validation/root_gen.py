@@ -135,6 +135,34 @@ KS_protxi = list([] for i in range(len(FILES)))
 
 #-----------------------------------------------------
 
+def cutfilter(tlvs, mode):
+    if mode == 'CUTS-INNER':
+        if  ((tlvs[0]+tlvs[1]).M() >= INVMCUTLOWER
+        and (tlvs[0]+tlvs[1]).M() <= INVMCUTUPPER
+        and (tlvs[0]+tlvs[1]).Pt() >= PTPAIRCUTLOWER
+        and (tlvs[0]+tlvs[1]).M() <= PTPAIRCUTUPPER
+        #and abs((tlvs[0]+tlvs[1]).Eta()) <= ETAPAIRCUT # With this it doesn't work
+        and tlvs[0].Pt() >= PTCUTLOWER
+        and tlvs[1].Pt() <= PTCUTUPPER
+        and abs(tlvs[0].Eta()) <= ETACUT
+        and abs(tlvs[1].Eta()) <= ETACUT):
+            return True
+        else:
+            return False
+    if mode == 'CUTS':
+        if  ((tlvs[0]+tlvs[1]).M() <= INVMCUTLOWER
+        and (tlvs[0]+tlvs[1]).M() >= INVMCUTUPPER
+        and (tlvs[0]+tlvs[1]).Pt() <= PTPAIRCUTLOWER
+        and (tlvs[0]+tlvs[1]).M() >= PTPAIRCUTUPPER
+        and abs((tlvs[0]+tlvs[1]).Eta()) >= ETAPAIRCUT
+        and tlvs[0].Pt() <= PTCUTLOWER
+        and tlvs[1].Pt() >= PTCUTUPPER
+        and abs(tlvs[0].Eta()) >= ETACUT
+        and abs(tlvs[1].Eta()) >= ETACUT):
+            return True
+        else:
+            return False
+
 def fill(tlvs, histoslog, DDlog, first, mode):
     IDS = tlvs[1::2]
     if first:
@@ -153,13 +181,13 @@ def fill(tlvs, histoslog, DDlog, first, mode):
         ivmmu.append(TH1D("1D_"+mode+"_ivmmu"+"_"+PDF[i]       , "", 50,0., 120.0))
         mueta.append(TH1D("1D_"+mode+"_mueta"+"_"+PDF[i]       , "", 50,-15., 15.))
         # Photon
-        phopz.append(TH1D("1D_"+mode+"_phopz"+"_"+PDF[i]       , "", 50,-10000., 10000.))
-        phopt.append(TH1D("1D_"+mode+"_phopt"+"_"+PDF[i]       , "", 50,0., 500.))
-        phoen.append(TH1D("1D_"+mode+"_phoen"+"_"+PDF[i]       , "", 50,-100., 5000.))
-        phoivm.append(TH1D("1D_"+mode+"_phoivm"+"_"+PDF[i]     , "", 50, 0, 3500))
+        phopz.append(TH1D("1D_"+mode+"_phopz"+"_"+PDF[i]       , "", 50,-10., 100.))
+        phopt.append(TH1D("1D_"+mode+"_phopt"+"_"+PDF[i]       , "", 50,0., 50.))
+        phoen.append(TH1D("1D_"+mode+"_phoen"+"_"+PDF[i]       , "", 50,-100., 500.))
+        phoivm.append(TH1D("1D_"+mode+"_phoivm"+"_"+PDF[i]     , "", 50, 0, 350))
         phopsrap2.append(TH1D('1D_'+mode+'_phopsrap2'+'_'+PDF[i] , '', 50, -1, 1))
         phopsrap1.append(TH1D('1D_'+mode+'_phopsrap1'+'_'+PDF[i] , '', 50, -10, 10))
-        phoY.append(TH1D('1D_'+mode+'_phoY'+'_'+PDF[i]         , '', 50, -10000, 10000))
+        phoY.append(TH1D('1D_'+mode+'_phoY'+'_'+PDF[i]         , '', 50, -10000, 100))
         # Monopole
         #mopz.append(TH1D("1D_"+mode+"_mupz"+"_"+PDF[i]       , "", 50,-2500.,2500.))
         #moen.append(TH1D("1D_"+mode+"_muen"+"_"+PDF[i]       , "", 50,-100., 900.))
@@ -180,17 +208,18 @@ def fill(tlvs, histoslog, DDlog, first, mode):
         dpm = tlvs[index-1]
         tlvs.pop(index)
         tlvs.pop(index-1)
-        protpz[i].Fill(dpp.Pz());
-        protpz[i].Fill(dpm.Pz());
-        proten[i].Fill(dpp.E())
-        proten[i].Fill(dpm.E())
-        protxi[i].Fill(1-(dpp.Pz()/(SQRTS/2)))
-        protxi[i].Fill(1-(dpm.Pz()/(-(SQRTS/2))))
-        ivmprot[i].Fill(sqrt((1-(dpp.Pz()/(SQRTS/2)))*(1-(dpm.Pz()/(-(SQRTS/2)))))*SQRTS)
-        protpt[i].Fill(dpp.Pt())
-        protpt[i].Fill(dpm.Pt())
-        proteta[i].Fill(dpp.Eta())
-        proteta[i].Fill(dpm.Eta())
+        if ((mode == 'CUTS' or mode == 'CUTS-INNER') and cutfilter([dpp, dpm], mode)) or mode == 'NO-CUTS':
+            protpz[i].Fill(dpp.Pz());
+            protpz[i].Fill(dpm.Pz());
+            proten[i].Fill(dpp.E())
+            proten[i].Fill(dpm.E())
+            protxi[i].Fill(1-(dpp.Pz()/(SQRTS/2)))
+            protxi[i].Fill(1-(dpm.Pz()/(-(SQRTS/2))))
+            ivmprot[i].Fill(sqrt((1-(dpp.Pz()/(SQRTS/2)))*(1-(dpm.Pz()/(-(SQRTS/2)))))*SQRTS)
+            protpt[i].Fill(dpp.Pt())
+            protpt[i].Fill(dpm.Pt())
+            proteta[i].Fill(dpp.Eta())
+            proteta[i].Fill(dpm.Eta())
     #-------------------------Múon mesurements
     if 13 in IDS or -13 in IDS:
         index = tlvs.index(13)
@@ -201,14 +230,15 @@ def fill(tlvs, histoslog, DDlog, first, mode):
         damu = tlvs[index-1]
         tlvs.pop(index)
         tlvs.pop(index-1)
-        mupz[i].Fill(dmu.Pz())
-        muen[i].Fill(dmu.E())
-        muen[i].Fill(damu.E())
-        mupt[i].Fill(dmu.Pt())
-        mupt[i].Fill(damu.Pt())
-        ivmmu[i].Fill((dmu+damu).M())
-        mueta[i].Fill(dmu.Eta())
-        mueta[i].Fill(damu.Eta())
+        if ((mode == 'CUTS' or mode == 'CUTS-INNER') and cutfilter([dmu, damu], mode)) or mode == 'NO-CUTS':
+            mupz[i].Fill(dmu.Pz())
+            muen[i].Fill(dmu.E())
+            muen[i].Fill(damu.E())
+            mupt[i].Fill(dmu.Pt())
+            mupt[i].Fill(damu.Pt())
+            ivmmu[i].Fill((dmu+damu).M())
+            mueta[i].Fill(dmu.Eta())
+            mueta[i].Fill(damu.Eta())
     #-------------------------Photon mesurements
     if 22 in IDS:
         index = tlvs.index(22)
@@ -219,20 +249,21 @@ def fill(tlvs, histoslog, DDlog, first, mode):
         dm = tlvs[index-1]
         tlvs.pop(index)
         tlvs.pop(index-1)
-        phopt[i].Fill(dp.Pt())
-        phopt[i].Fill(dm.Pt())
-        phopz[i].Fill(dp.Pz())
-        phopz[i].Fill(dm.Pz())
-        phoen[i].Fill(dm.E())
-        phoen[i].Fill(dp.E())
-        phoivm[i].Fill((dp+dm).M())
-        phopsrap2[i].Fill((dp+dm).Eta())
-        phopsrap1[i].Fill(dp.Eta())
-        phopsrap1[i].Fill(dm.Eta())               
-        phoY[i].Fill(dp.Y())
-        phoY[i].Fill(dm.Y())
+        if ((mode == 'CUTS' or mode == 'CUTS-INNER') and cutfilter([dp, dm], mode)) or mode == 'NO-CUTS':
+            phopt[i].Fill(dp.Pt())
+            phopt[i].Fill(dm.Pt())
+            phopz[i].Fill(dp.Pz())
+            phopz[i].Fill(dm.Pz())
+            phoen[i].Fill(dm.E())
+            phoen[i].Fill(dp.E())
+            phoivm[i].Fill((dp+dm).M())
+            phopsrap2[i].Fill((dp+dm).Eta())
+            phopsrap1[i].Fill(dp.Eta())
+            phopsrap1[i].Fill(dm.Eta())               
+            phoY[i].Fill(dp.Y())
+            phoY[i].Fill(dm.Y())
     #-------------------------Monopole mesurements
-    if 90 in IDS:
+    if 90 in IDS: # Monopole not coded to have cuts yet 
         index = tlvs.index(22)
         dmo = tlvs[index-1]
         tlvs.pop(index)
@@ -248,8 +279,9 @@ def fill(tlvs, histoslog, DDlog, first, mode):
         KS_ivm_mu[i].append((dmu+damu).M())
     # 2D:
     if 13 in IDS and -13 in IDS and 2212 in IDS:
-        DDivmprotmmumu[i].Fill(sqrt((1-(dpp.Pz()/(SQRTS/2)))*(1-(dpm.Pz()/(-(SQRTS//2)))))*SQRTS, (dmu+damu).M())
-        DDxipximu[i].Fill(1-(dpp.Pz()/(SQRTS/2)), (1/SQRTS)*(dmu.Pt()*exp(dmu.Eta())+damu.Pt()*exp(damu.Eta())))
+        if ((mode == 'CUTS' or mode == 'CUTS-INNER') and cutfilter([dpp, dpm], mode) and cutfilter([dmu, damu], mode)) or mode == 'NO-CUTS':
+            DDivmprotmmumu[i].Fill(sqrt((1-(dpp.Pz()/(SQRTS/2)))*(1-(dpm.Pz()/(-(SQRTS//2)))))*SQRTS, (dmu+damu).M())
+            DDxipximu[i].Fill(1-(dpp.Pz()/(SQRTS/2)), (1/SQRTS)*(dmu.Pt()*exp(dmu.Eta())+damu.Pt()*exp(damu.Eta())))
 
 
 
@@ -378,33 +410,14 @@ for i in range(len(FILES)):
         #CLOSE EVENT AND FILL HISTOGRAMS:
         elif coll[0] == "</event>":
             # KINEMATICS OF DECAY PRODUCTS:
-            if ( cuts and INNER                 # TRY EACH ONE
-                and (dmu+damu).M() >= INVMCUTLOWER
-                and (dmu+damu).M() <= INVMCUTUPPER
-                and (dmu+damu).Pt() >= PTPAIRCUTLOWER
-        	and (dmu+damu).Pt() <= PTPAIRCUTUPPER
-                #and abs((damu+dmu).Eta()) <= ETAPAIRCUT
-                and dmu.Pt() >= PTCUTLOWER
-                and damu.Pt() >= PTCUTLOWER
-                #and dp.Pt() <= PTCUTUPPER
-                #and dm.Pt() <= PTCUTUPPER
-                and abs(damu.Eta()) <= ETACUT
-                and abs(dmu.Eta()) <= ETACUT):
+            if cuts and INNER:
                 fill(TLVS, histoslog, DDlog, first, 'CUTS-INNER')
                 first = 0
 
                 evPASS += 1
-            elif ( cuts and not INNER
-                and (dp+dm).M() >= INVMCUTLOWER
-                and (dp+dm).M() <= INVMCUTUPPER
-                and (dp+dm).Pt() >= PTPAIRCUTLOWER
-                and (dp+dm).Pt() <= PTPAIRCUTUPPER
-                and abs((dp+dm).Eta()) >= ETAPAIRCUT
-                and dp.Pt() >= PTCUTLOWER
-                and dm.Pt() >= PTCUTLOWER
-                and dp.Pt() <= PTCUTUPPER
-                and dm.Pt() <= PTCUTUPPER):
+            elif cuts and not INNER:
                 fill(TLVS, histoslog, DDlog, first, 'CUTS')
+                first = 0
 
                 evPASS += 1;
             elif not cuts:
