@@ -5,7 +5,8 @@ Writes the protons into an LHE file from  MadGraph or Superchic
 '''
 # Receives particle ID, file name and generator of origin as arguments
 if len(sys.argv) != 4:
-    print('Missing arguments')
+    print('Missing argument, correct syntax as follows:')
+    print('python3 LHE-Proton-Writer.py {ID} {path of .lhe file} {generator of origin}')
     sys.exit()
 
 ID = str(sys.argv[1])
