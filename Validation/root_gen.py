@@ -4,6 +4,7 @@ from math import *
 from ROOT import TLorentzVector, TFile, TH1D, TH2D, TMath
 from array import array
 import numpy as np
+import sys
 
 #####################################################################
 # GGS (CERN-CMS/UFRGS) ---
@@ -14,50 +15,51 @@ import numpy as np
 #####################################################################
 # USER INPUT:
 
-rootinput = np.loadtxt('root_input.txt', unpack=True, dtype=str, delimiter='=')
+rootinput = np.loadtxt(sys.argv[1], unpack=True, dtype=str, delimiter='=')
+rootinput = dict(zip(list(i.strip() for i in rootinput[0]), rootinput[1]))
 
 # CROSS SECTION(S) (pb):
-xsec    = eval(rootinput[1][0]) #FIXME
+xsec    = eval(rootinput['xsec']) #FIXME
 
 # PDF "_"+LABEL FOR OUTPUT FILES:
-JOB     = eval(rootinput[1][1])
-PDF     = eval(rootinput[1][2]) #FIXME
-scale   = eval(rootinput[1][3]) #bug, use False, carefull with Nevts
-cuts    = eval(rootinput[1][4])
-setLog  = eval(rootinput[1][5])
-filled  = eval(rootinput[1][6])
-stacked = eval(rootinput[1][7])
-data    = eval(rootinput[1][8])
+JOB     = eval(rootinput['JOB'])
+PDF     = eval(rootinput['PDF']) #FIXME
+scale   = eval(rootinput['scale']) #bug, use False, carefull with Nevts
+cuts    = eval(rootinput['cuts'])
+setLog  = eval(rootinput['setLog'])
+filled  = eval(rootinput['filled'])
+stacked = eval(rootinput['stacked'])
+data    = eval(rootinput['data'])
 
 # PARTICLES OF INTEREST
-IDS     = eval(rootinput[1][15])
+IDS     = eval(rootinput['IDS'])
 
 
 # KINEMATICAL CUTS: #FIXME
-INVMCUTUPPER   =eval(rootinput[1][16])
-INVMCUTLOWER   =eval(rootinput[1][17])
-
-PTPAIRCUTUPPER =eval(rootinput[1][18])
-PTPAIRCUTLOWER =eval(rootinput[1][19])
-
-ETACUT         =eval(rootinput[1][20])
-ETAPAIRCUT     =eval(rootinput[1][21])
-INNER          =eval(rootinput[1][22])
-
-PTCUTUPPER     =eval(rootinput[1][23])
-PTCUTLOWER     =eval(rootinput[1][24])
+INVMCUTUPPER   =eval(rootinput['INVMCUTUPPER'])
+INVMCUTLOWER   =eval(rootinput['INVMCUTLOWER'])
+                                
+PTPAIRCUTUPPER =eval(rootinput['PTPAIRCUTUPPER'])
+PTPAIRCUTLOWER =eval(rootinput['PTPAIRCUTLOWER'])
+                                
+ETACUT         =eval(rootinput['ETACUT'])
+ETAPAIRCUT     =eval(rootinput['ETAPAIRCUT'])
+INNER          =eval(rootinput['INNER'])
+                                
+PTCUTUPPER     =eval(rootinput['PTCUTUPPER'])
+PTCUTLOWER     =eval(rootinput['PTCUTLOWER'])
 
 # INPUT FILES:
 
 #processo 3
-FILES   = eval(rootinput[1][13])#FIXME
+FILES   = eval(rootinput['FILES'])#FIXME
 
 
 # EVENT SAMPLE INPUT:
-Nevt    = eval(rootinput[1][10]) #FIXME
-Nmax    = eval(rootinput[1][11]) # number of max events to obtain from samples
+Nevt    = eval(rootinput['Nevt']) #FIXME
+Nmax    = eval(rootinput['Nmax']) # number of max events to obtain from samples
 EVTINPUT= str(int(Nevt/1000))+"k";
-SQRTS   = eval(rootinput[1][12]) # in GeV
+SQRTS   = eval(rootinput['SQRTS']) # in GeV
 
 #####################################################################
 
@@ -69,13 +71,14 @@ for m in range(len(PDF)):
 	else:
 		STRING+=PDF[m]+"-";
 
-LABEL = "FULL_inner.final.madgraph";
-if cuts: LABEL+=".cuts";
-if scale: LABEL+=".scaled";
-if setLog: LABEL+=".log";
-if filled: LABEL+=".filled";
-if stacked: LABEL+=".stacked";
-if data: LABEL+=".data";
+LABEL = JOB
+if cuts: LABEL+="_CUTS"
+if INNER: LABEL+='_INNER'
+if scale: LABEL+="_SCALED"
+if setLog: LABEL+="_LOG"
+if filled: LABEL+="_FILLED"
+if stacked: LABEL+="_STACKED"
+if data: LABEL+="_DATA"
 
 # IMAGE FORMATS TO BE CREATED:
 FILE_TYPES = [LABEL+".png"];
@@ -83,7 +86,7 @@ print ("*****");
 print ("Os arquivos gravados em %s" % (FILE_TYPES[0]));
 print ("*****");
 # SAVING HISTOS INTO ROOT FILE:
-FILEROOT = TFile("histos"+LABEL+".root","RECREATE");
+FILEROOT = TFile(LABEL+".root","RECREATE");
 
 # CREATE INDIVIDUAL DIRS FOR IMAGE TYPES:
 #print(len(FILE_TYPES))

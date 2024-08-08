@@ -4,40 +4,42 @@ from math import *
 from ROOT import TLorentzVector, TFile, TH1D, TH2D, TCanvas, TGaxis, TLegend, TPaveText, gStyle, THStack, gPad, kTRUE
 import numpy as np
 
-rootinput = np.loadtxt('root_input.txt', unpack=True, dtype=str, delimiter='=')
+rootinput = np.loadtxt(sys.argv[1], unpack=True, dtype=str, delimiter='=')
+rootinput = dict(zip(list(i.strip() for i in rootinput[0]), rootinput[1]))
 
 # CROSS SECTION(S) (pb):
-xsec    = eval(rootinput[1][0])
+xsec    = eval(rootinput['xsec']) #FIXME
 
-# Plotting options:
-JOB     = eval(rootinput[1][1])
-PDF     = eval(rootinput[1][2])
-scale   = eval(rootinput[1][3]) 
-cuts    = eval(rootinput[1][4])
-setLog  = eval(rootinput[1][5])
-filled  = eval(rootinput[1][6])
-stacked = eval(rootinput[1][7])
-data    = eval(rootinput[1][8])
-LUMI    = eval(rootinput[1][9])
+# PDF "_"+LABEL FOR OUTPUT FILES:
+JOB     = eval(rootinput['JOB'])
+PDF     = eval(rootinput['PDF']) #FIXME
+scale   = eval(rootinput['scale']) #bug, use False, carefull with Nevts
+cuts    = eval(rootinput['cuts'])
+setLog  = eval(rootinput['setLog'])
+filled  = eval(rootinput['filled'])
+stacked = eval(rootinput['stacked'])
+data    = eval(rootinput['data'])
+LUMI    = eval(rootinput['LUMI'])
+
+# PARTICLES OF INTEREST
+IDS     = eval(rootinput['IDS'])
 
 # EVENT SAMPLE INPUT:
-Nevt    = eval(rootinput[1][10])
-Nmax    = eval(rootinput[1][11])
-EVTINPUT= str(int(Nmax/1000))+"k";
-SQRTS   = eval(rootinput[1][12])
-lumi    = float(rootinput[1][14])
-
-# ID of particles of interest
-IDS = eval(rootinput[1][15])
+Nevt    = eval(rootinput['Nevt']) #FIXME
+Nmax    = eval(rootinput['Nmax']) # number of max events to obtain from samples
+EVTINPUT= str(int(Nevt/1000))+"k";
+SQRTS   = eval(rootinput['SQRTS']) # in GeV
+lumi    = float(rootinput['lumi'])
 
 # LABELS:
-LABEL = "FULL_inner.final.madgraph";
-if cuts: LABEL+=".cuts";
-if scale: LABEL+=".scaled";
-if setLog: LABEL+=".log";
-if filled: LABEL+=".filled";
-if stacked: LABEL+=".stacked";
-if data: LABEL+=".data";
+LABEL = JOB
+if cuts: LABEL+="_CUTS"
+if INNER: LABEL+='_INNER'
+if scale: LABEL+="_SCALED"
+if setLog: LABEL+="_LOG"
+if filled: LABEL+="_FILLED"
+if stacked: LABEL+="_STACKED"
+if data: LABEL+="_DATA"
 
 # IMAGE FORMATS TO BE CREATED:
 FILE_TYPES = [LABEL+".png"];
@@ -46,7 +48,7 @@ FILE_TYPES = [LABEL+".png"];
 for l in range(len(FILE_TYPES)):
 	call(["mkdir","-p",FILE_TYPES[l]]);
 
-FILEROOT = TFile.Open("histos"+LABEL+".root", "READ")
+FILEROOT = TFile.Open(LABEL+".root", "READ")
 
 keys = FILEROOT.GetListOfKeys()
 
