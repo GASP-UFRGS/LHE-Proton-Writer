@@ -32,14 +32,15 @@ def Draw():
     return [xi1_list, xi2_list]
     
 # Receives file path, generator of origin and particle IDs as arguments
-if len(sys.argv) < 4:
+if len(sys.argv) < 5:
     print('Missing arguments')
-    print('Syntax: python3 LHE-Proton-Writer.py <path of .lhe file> <generator of origin> <IDs>')
+    print('Syntax: python3 LHE-Proton-Writer.py <path of .lhe file> <generator of origin> <IDs> <pileup:True/False>')
     sys.exit()
 
 path = sys.argv[1]
 generator = sys.argv[2].lower()
 ID = sys.argv[3:]
+pileup = sys.argv[4]
 new = 'new_'+path
 
 if not generator == 'madgraph' or generator == 'superchic':
@@ -48,9 +49,6 @@ if not generator == 'madgraph' or generator == 'superchic':
 
 # Flag for printing the Invariant Mass of protons and leptons
 printivm = False
-
-# Option to include pileup protons:
-pileup = True
 
 # Setting flags according to chosen generator
 if(generator == 'madgraph'):
@@ -116,9 +114,9 @@ with open(path, 'r+') as f, open(new, 'w') as new:
                     if generator == 'madgraph':
                         if sign > 0: event.insert(i+1, ' '*5+f'2212{" "*2}1    0    0    0    0 +{0:.10e} +{0:.10e} +{pzp:.10e} {ep:.10e} {m0:.10e} {0:.4e} {1:.4e}\n')
                         else: event.insert(i+1, ' '*5+f'2212{" "*2}1    0    0    0    0 -{0:.10e} -{0:.10e} {pzp:.10e} {ep:.10e} {m0:.10e} {0:.4e} {-1:.4e}\n')
-                    PU_protons = Draw() # Draws pileup protons
                     # the 6th number is the xi, while px = py = m0 = 0, and spin/helicity = 9 for identification as a pileup proton. 
-                    if pileup:
+                    if (pileup == 'true' or pileup == "True"):
+                        PU_protons = Draw() # Draws pileup protons
                         for xi in PU_protons[0]: # loop over 'left PPS arm xis'
                             if generator == 'superchic':
                                 event.insert(i+1, ' '*13+f'2212{" "*8}1    0    0    0    {xi:.9e} {0:.9e} {0:.9e} +{(1-xi)*pzini:.9e}  {(1-xi)*pzini:.9e}  {0:.9e} 0. 9.\n')
