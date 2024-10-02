@@ -34,13 +34,13 @@ def Draw():
 # Receives file path, generator of origin and particle IDs as arguments
 if len(sys.argv) < 5:
     print('Missing arguments')
-    print('Syntax: python3 LHE-Proton-Writer.py <path of .lhe file> <generator of origin> <IDs> <pileup:True/False>')
+    print('Syntax: python3 LHE-Proton-Writer.py <path of .lhe file> <generator of origin> <pileup:True/False> <IDs>')
     sys.exit()
 
 path = sys.argv[1]
 generator = sys.argv[2].lower()
-ID = sys.argv[3:]
-pileup = sys.argv[4]
+pileup = sys.argv[3]
+ID = sys.argv[4:]
 new = 'new_'+path
 
 if not generator == 'madgraph' or generator == 'superchic':
@@ -84,7 +84,7 @@ with open(path, 'r+') as f, open(new, 'w') as new:
         l = f.readline()
         if l == flag0:
             event.append(l)
-            while l != flag1:
+            while l.strip() != flag1.strip():
                 l = f.readline()
                 event.append(l)
             for i in range(len(event)):
