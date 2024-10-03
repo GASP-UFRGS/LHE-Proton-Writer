@@ -30,52 +30,80 @@ def Draw():
             xi2_list.append( xi_min*pow( xi_max/xi_min, np.random.uniform(0,1,size=None) )*random.gauss(mu, sigma) )
 
     return [xi1_list, xi2_list]
+
+def Fill_protons():
+    for xi in PU_protons[0]: # loop over 'left PPS arm xis'
+        if generator == 'superchic':
+            event.insert(i+1, ' '*13+f'2212{" "*8}1    0    0    0    {xi:.9e} {0:.9e} {0:.9e} +{(1-xi)*pzini:.9e}  {(1-xi)*pzini:.9e}  {0:.9e} 0. 9.\n')
+        if generator == 'madgraph':
+            event.insert(i+1,' '*5+f'2212{" "*2}1    0    0    0    {xi:.10e} +{0:.5e} +{0:.5e} +{(1-xi)*pzini:.10e} {(1-xi)*pzini:.10e} {0:.5e} {0:.4e} {9:.4e}\n')
+    for xi in PU_protons[1]: # loop over 'right PPS arm xis'
+        if generator == 'superchic':
+            event.insert(i+1,' '*13+f'2212{" "*8}1    0    0    0    {xi:.9e} {0:.9e} {0:.9e} -{(1-xi)*pzini:.9e}  {(1-xi)*pzini:.9e}  {0:.9e} 0. 9.\n')
+        if generator == 'madgraph':
+            event.insert(i+1,' '*5+f'2212{" "*2}1    0    0    0    {xi:.10e} +{0:.5e} +{0:.5e} -{(1-xi)*pzini:.10e} {(1-xi)*pzini:.10e} {0:.5e} {0:.4e} {9:.4e}\n')
+
+def Print_invm():
+    line = nl.split()
+    if(len(line) > 1 and line[0] == '2212'):
+        lvector.SetPxPyPzE(float(line[6]), float(line[7]), float(line[8]), float(line[9]))
+        print(f'M(p) = {lvector.M()}')
+    if(len(line) > 1 and line[0] == '13'):
+        lvector.SetPxPyPzE(float(line[6]), float(line[7]), float(line[8]), float(line[9]))
+        print(f'M(\u03BC+) = {lvector.M()}')
+    if(len(line) > 1 and line[0] == '-13'):
+        lvector.SetPxPyPzE(float(line[6]), float(line[7]), float(line[8]), float(line[9]))
+        print(f'M(\u03BC) = {lvector.M()}\n*-*-*-*-*-*-*-*-*-*-*')
     
-# Receives file path, generator of origin and particle IDs as arguments
-if len(sys.argv) < 5:
-    print('Missing arguments')
-    print('Syntax: python3 LHE-Proton-Writer.py <path of .lhe file> <generator of origin> <pileup:True/False> <IDs>')
-    sys.exit()
+def check_args():
+    # Receives file path, generator of origin and particle IDs as arguments
+    if len(sys.argv) < 5:
+        print('Missing arguments')
+        print('Syntax: python3 LHE-Proton-Writer.py <path of .lhe file> <generator of origin> <pileup:True/False> <IDs>')
+        sys.exit()
 
-path = sys.argv[1]
-generator = sys.argv[2].lower()
-pileup = sys.argv[3]
-ID = sys.argv[4:]
-new = 'new_'+path
+    path = sys.argv[1]
+    generator = sys.argv[2].lower()
+    pileup = sys.argv[3]
+    ID = sys.argv[4:]
+    new = 'new_'+path
 
-if not generator == 'madgraph' or generator == 'superchic':
-    print('<<'+generator+'>> generator unsupported. Only "madgraph" and "superchic" are supported. Exiting.')
-    sys.exit()
+    if not generator == 'madgraph' or generator == 'superchic':
+        print('<<'+generator+'>> generator unsupported. Only "madgraph" and "superchic" are supported. Exiting.')
+        sys.exit()
 
-# Flag for printing the Invariant Mass of protons and leptons
-printivm = False
+    # Flag for printing the Invariant Mass of protons and leptons
+    printivm = False
 
-# Setting flags according to chosen generator
-if(generator == 'madgraph'):
-    flag0 = '<event>\n'
-    flag1 = '</event>\n'
-    header = '<init>\n'
-    end = '</LesHouchesEvents>\n'
-if(generator == 'superchic'):
-    flag0 = ' <event>\n'
-    flag1 = ' </event>\n'
-    header = ' <init>\n'
-    end = ' </LesHouchesEvents>\n'
+    # Setting flags according to chosen generator
+    if(generator == 'madgraph'):
+        flag0 = '<event>\n'
+        flag1 = '</event>\n'
+        header = '<init>\n'
+        end = '</LesHouchesEvents>\n'
+    if(generator == 'superchic'):
+        flag0 = ' <event>\n'
+        flag1 = ' </event>\n'
+        header = ' <init>\n'
+        end = ' </LesHouchesEvents>\n'
 
-# Create list of lines from the LHE file and if needed finding the beginning of events 
-with open(path, 'r+') as f:
-    l = f.readline()
-    while l != header:
+def set_energy():
+    # Create list of lines from the LHE file and if needed finding the beginning of events 
+    with open(path, 'r+') as f:
         l = f.readline()
-    beamenergy = int(float(f.readline().split()[2]))
+        while l != header:
+            l = f.readline()
+        beamenergy = int(float(f.readline().split()[2]))
 
-pzini = beamenergy		# protons inicial pz 
-eini = beamenergy		# protons inicial energy
+    pzini = beamenergy		# protons inicial pz 
+    eini = beamenergy		# protons inicial energy
 
 # Proton rest mass: 0.9382720882E+00    # from: https://pdg.lbl.gov/2019/reviews/rpp2019-rev-phys-constants.pdf
 m0 = 0.9382720882
 
 
+check_args()
+set_energy()
 event = []
 lvector = TLorentzVector()
 with open(path, 'r+') as f, open(new, 'w') as new:
@@ -117,30 +145,12 @@ with open(path, 'r+') as f, open(new, 'w') as new:
                     # the 6th number is the xi, while px = py = m0 = 0, and spin/helicity = 9 for identification as a pileup proton. 
                     if (pileup == 'true' or pileup == "True"):
                         PU_protons = Draw() # Draws pileup protons
-                        for xi in PU_protons[0]: # loop over 'left PPS arm xis'
-                            if generator == 'superchic':
-                                event.insert(i+1, ' '*13+f'2212{" "*8}1    0    0    0    {xi:.9e} {0:.9e} {0:.9e} +{(1-xi)*pzini:.9e}  {(1-xi)*pzini:.9e}  {0:.9e} 0. 9.\n')
-                            if generator == 'madgraph':
-                                event.insert(i+1,' '*5+f'2212{" "*2}1    0    0    0    {xi:.10e} +{0:.5e} +{0:.5e} +{(1-xi)*pzini:.10e} {(1-xi)*pzini:.10e} {0:.5e} {0:.4e} {9:.4e}\n')
-                        for xi in PU_protons[1]: # loop over 'right PPS arm xis'
-                            if generator == 'superchic':
-                                event.insert(i+1,' '*13+f'2212{" "*8}1    0    0    0    {xi:.9e} {0:.9e} {0:.9e} -{(1-xi)*pzini:.9e}  {(1-xi)*pzini:.9e}  {0:.9e} 0. 9.\n')
-                            if generator == 'madgraph':
-                                event.insert(i+1,' '*5+f'2212{" "*2}1    0    0    0    {xi:.10e} +{0:.5e} +{0:.5e} -{(1-xi)*pzini:.10e} {(1-xi)*pzini:.10e} {0:.5e} {0:.4e} {9:.4e}\n')
+                        Fill_protons()
 
             for nl in event:
                 new.write(nl)
                 if(printivm):
-                   line = nl.split()
-                   if(len(line) > 1 and line[0] == '2212'):
-                       lvector.SetPxPyPzE(float(line[6]), float(line[7]), float(line[8]), float(line[9]))
-                       print(f'M(p) = {lvector.M()}')
-                   if(len(line) > 1 and line[0] == '13'):
-                       lvector.SetPxPyPzE(float(line[6]), float(line[7]), float(line[8]), float(line[9]))
-                       print(f'M(\u03BC+) = {lvector.M()}')
-                   if(len(line) > 1 and line[0] == '-13'):
-                       lvector.SetPxPyPzE(float(line[6]), float(line[7]), float(line[8]), float(line[9]))
-                       print(f'M(\u03BC) = {lvector.M()}\n*-*-*-*-*-*-*-*-*-*-*')
+                    Print_invm()
             event.clear()
         else:
             new.write(l)
