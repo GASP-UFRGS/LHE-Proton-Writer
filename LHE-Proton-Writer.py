@@ -1,5 +1,6 @@
 import sys
 import numpy as np
+from scipy import proton_mass as m0
 import random
 from ROOT import TLorentzVector 
 '''
@@ -97,9 +98,6 @@ def set_energy():
 
     pzini = beamenergy		# protons inicial pz 
     eini = beamenergy		# protons inicial energy
-
-# Proton rest mass: 0.9382720882E+00    # from: https://pdg.lbl.gov/2019/reviews/rpp2019-rev-phys-constants.pdf
-m0 = 0.9382720882
 
 
 check_args()
